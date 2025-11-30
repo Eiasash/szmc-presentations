@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useKV } from '@github/spark/hooks';
 import { Presentation, Slide, PresentationTheme } from '@/lib/types';
+import { PresentationTemplate } from '@/lib/templates';
 import { PresentationList } from '@/components/PresentationList';
 import { SlideEditor } from '@/components/SlideEditor';
 import { PresentationViewer } from '@/components/PresentationViewer';
@@ -8,6 +9,7 @@ import { AIContentGenerator } from '@/components/AIContentGenerator';
 import { ThemeSelector } from '@/components/ThemeSelector';
 import { ExportMenu } from '@/components/ExportMenu';
 import { ImportMenu } from '@/components/ImportMenu';
+import { TemplateSelector } from '@/components/TemplateSelector';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -84,6 +86,27 @@ function App() {
     setPresentations((current) => [...(current || []), newPresentation]);
     setCurrentPresentationId(newPresentation.id);
     setCurrentSlideIndex(0);
+  };
+
+  const createPresentationFromTemplate = (template: PresentationTemplate, title: string) => {
+    const newSlides: Slide[] = template.slides.map((slide, index) => ({
+      ...slide,
+      id: `slide-${Date.now()}-${index}`,
+    }));
+
+    const newPresentation: Presentation = {
+      id: `pres-${Date.now()}`,
+      title: title,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      theme: template.theme,
+      slides: newSlides,
+    };
+
+    setPresentations((current) => [...(current || []), newPresentation]);
+    setCurrentPresentationId(newPresentation.id);
+    setCurrentSlideIndex(0);
+    toast.success(`Presentation created from ${template.name} template`);
   };
 
   const importPresentation = (presentation: Presentation) => {
@@ -226,6 +249,7 @@ function App() {
               ) : (
                 <>
                   <ImportMenu onImport={importPresentation} />
+                  <TemplateSelector onSelectTemplate={createPresentationFromTemplate} />
                   <AIContentGenerator onGenerate={createPresentationFromAI} />
                   <Button onClick={() => setShowNewDialog(true)} className="bg-accent hover:bg-accent/90">
                     <Plus className="mr-2" />

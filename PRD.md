@@ -36,9 +36,16 @@ A professional presentation builder and viewer for SZMC that enables users to cr
 ### Presentation Management
 - **Functionality**: Create, edit, and delete presentations with titles and metadata
 - **Purpose**: Organize multiple presentation decks for different topics or events
-- **Trigger**: User clicks "New Presentation" button or selects existing presentation
+- **Trigger**: User clicks "New Presentation" button, "From Template" button, or selects existing presentation
 - **Progression**: Click new presentation → Enter title → Auto-save → View in list → Select to edit
 - **Success criteria**: Presentations persist between sessions and can be accessed from the main dashboard
+
+### Template Selection
+- **Functionality**: Create presentations from pre-built templates for common use cases like medical reports, business pitches, research findings, and training sessions
+- **Purpose**: Accelerate presentation creation with professional, purpose-built slide structures
+- **Trigger**: User clicks "From Template" button from the main dashboard
+- **Progression**: Click From Template → Browse templates by category (Medical, Business, Education, General) → Select template → Enter presentation title → Presentation created with pre-filled content
+- **Success criteria**: Templates provide complete slide structures with placeholder content that users can customize, theme is automatically applied based on template type
 
 ### Slide Editor
 - **Functionality**: Add, edit, reorder, and delete slides with title and content fields
@@ -99,6 +106,8 @@ A professional presentation builder and viewer for SZMC that enables users to cr
 - **Invalid image URLs**: Handle broken links gracefully, show error without breaking slide
 - **Image positioning**: Ensure images scale appropriately for different screen sizes and positions
 - **Corrupted imports**: Validate JSON structure, handle missing fields with defaults
+- **Template selection**: Allow users to preview template structure before creating, show slide count and category
+- **Template customization**: All template content is editable after creation, users can change theme independently
 
 ## Design Direction
 The design should feel professional, trustworthy, and institutional - appropriate for medical or organizational settings. It should project authority and clarity while remaining approachable. A minimal interface serves the content-first purpose, ensuring presentations remain the focus while the tools feel sophisticated and purpose-built.
@@ -181,6 +190,8 @@ Animations should be purposeful and professional - nothing flashy or distracting
   - FileText (Text import/export option)
   - Image (add/edit image to slide)
   - Link (image URL input)
+  - FileText (template selector)
+  - Briefcase, FirstAid, GraduationCap, Files (template category icons)
   
 - **Spacing**: 
   - Container padding: p-6 (24px) for main areas
@@ -201,3 +212,4 @@ Animations should be purposeful and professional - nothing flashy or distracting
   - Simplify AI generation form for mobile viewports
   - Image positioning adjusts for mobile (side positions become top/bottom)
   - Import/export menus remain accessible with scrollable dropdowns
+  - Template selector displays single column grid on mobile with scrollable tabs for categories
