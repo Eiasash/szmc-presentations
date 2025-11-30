@@ -10,4 +10,23 @@ export interface Presentation {
   createdAt: number;
   updatedAt: number;
   slides: Slide[];
+  theme?: PresentationTheme;
+}
+
+export type PresentationTheme = 
+  | 'professional-blue'
+  | 'medical-green'
+  | 'corporate-gray'
+  | 'warm-orange'
+  | 'elegant-purple'
+  | 'minimal-black';
+
+export interface ThemeConfig {
+  id: PresentationTheme;
+  name: string;
+  description: string;
+  background: string;
+  textColor: string;
+  accentColor: string;
+  secondaryColor: string;
 }

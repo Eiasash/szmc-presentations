@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Trash, CaretUp, CaretDown } from '@phosphor-icons/react';
+import { AISlideEnhancer } from '@/components/AISlideEnhancer';
 
 interface SlideEditorProps {
   slides: Slide[];
@@ -86,6 +87,17 @@ export function SlideEditor({
       <div className="flex-1 overflow-y-auto">
         <Card className="p-6">
           <div className="space-y-4">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold">Edit Slide {currentSlideIndex + 1}</h2>
+              <AISlideEnhancer
+                currentTitle={currentSlide.title}
+                currentContent={currentSlide.content}
+                onEnhance={(title, content) => {
+                  onUpdateSlide(currentSlide.id, { title, content });
+                }}
+              />
+            </div>
+
             <div>
               <label className="text-sm font-medium mb-2 block">Slide Title</label>
               <Input

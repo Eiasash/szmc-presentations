@@ -1,16 +1,37 @@
 # Planning Guide
 
-A professional presentation builder and viewer for SZMC that enables users to create, manage, and present slide-based content with a clean, institutional interface suitable for medical or organizational presentations.
+A professional presentation builder and viewer for SZMC that enables users to create, manage, and present slide-based content with AI-powered content generation, customizable themes, and a clean institutional interface suitable for medical or organizational presentations.
 
 **Experience Qualities**: 
 1. **Professional** - The interface should inspire confidence and credibility, appropriate for medical or institutional settings
-2. **Focused** - Clear visual hierarchy that keeps attention on the content without distracting elements
+2. **Intelligent** - AI-powered features that enhance productivity without overwhelming the user
 3. **Efficient** - Streamlined workflows that allow quick creation and seamless presentation delivery
 
 **Complexity Level**: Light Application (multiple features with basic state)
-  - The app includes presentation creation, editing, slide management, and a full-screen presentation mode with navigation
+  - The app includes presentation creation, editing, slide management, AI content generation, theme customization, and a full-screen presentation mode with navigation
 
 ## Essential Features
+
+### AI Content Generation
+- **Functionality**: Generate complete presentations from a topic description using AI
+- **Purpose**: Accelerate presentation creation and provide structured starting points
+- **Trigger**: User clicks "AI Generate" button from the main dashboard
+- **Progression**: Click AI Generate → Enter topic and slide count → AI creates slides → Review and edit generated content
+- **Success criteria**: AI generates relevant, well-structured slides that users can immediately use or customize
+
+### AI Slide Enhancement
+- **Functionality**: Improve individual slide content using AI suggestions
+- **Purpose**: Refine and professionalize slide content quickly
+- **Trigger**: User clicks "AI Enhance" button while editing a slide
+- **Progression**: Edit slide → Click AI Enhance → AI improves title and content → User accepts or continues editing
+- **Success criteria**: Enhanced content is more professional, clear, and well-structured while maintaining the original intent
+
+### Theme Customization
+- **Functionality**: Choose from multiple visual themes for presentations
+- **Purpose**: Match presentation style to audience and occasion
+- **Trigger**: User clicks "Theme" button while editing a presentation
+- **Progression**: Click Theme → Preview theme options → Select theme → Presentation mode reflects chosen theme
+- **Success criteria**: Theme changes apply immediately to presentation mode with appropriate colors and styling
 
 ### Presentation Management
 - **Functionality**: Create, edit, and delete presentations with titles and metadata
@@ -27,11 +48,11 @@ A professional presentation builder and viewer for SZMC that enables users to cr
 - **Success criteria**: All slide changes persist immediately, slides can be reordered, and content supports formatting
 
 ### Presentation Mode
-- **Functionality**: Full-screen slide viewer with keyboard/button navigation
+- **Functionality**: Full-screen slide viewer with keyboard/button navigation and themed backgrounds
 - **Purpose**: Deliver presentations professionally with distraction-free viewing
 - **Trigger**: User clicks "Present" button from editor view
-- **Progression**: Click present → Enter fullscreen → Navigate with arrows/keys → Display slide number → Exit to editor
-- **Success criteria**: Smooth transitions, keyboard shortcuts work, slide counter visible, easy exit
+- **Progression**: Click present → Enter fullscreen with theme → Navigate with arrows/keys → Display slide number → Exit to editor
+- **Success criteria**: Smooth transitions, keyboard shortcuts work, slide counter visible, theme applies correctly, easy exit
 
 ### Slide Navigation
 - **Functionality**: Move between slides using arrow keys, buttons, or click navigation
@@ -46,6 +67,10 @@ A professional presentation builder and viewer for SZMC that enables users to cr
 - **Long content**: Implement scroll within slides if content exceeds viewport
 - **Unsaved work**: Auto-save all changes immediately to prevent data loss
 - **Deleted presentations**: Confirm before deletion with clear warning message
+- **AI generation failures**: Show clear error messages and allow retry without losing input
+- **AI rate limiting**: Gracefully handle API limits with informative messages
+- **Invalid AI responses**: Fallback to default content or show error without breaking the app
+- **Theme persistence**: Save theme choice with presentation for consistent viewing
 
 ## Design Direction
 The design should feel professional, trustworthy, and institutional - appropriate for medical or organizational settings. It should project authority and clarity while remaining approachable. A minimal interface serves the content-first purpose, ensuring presentations remain the focus while the tools feel sophisticated and purpose-built.
@@ -84,24 +109,26 @@ Animations should be purposeful and professional - nothing flashy or distracting
 
 ## Component Selection
 - **Components**: 
-  - Card (presentation list items, slide previews) - with subtle shadow and hover lift
-  - Button (primary actions: "New Presentation", "Present", "Add Slide") - with accent color for primary, ghost for secondary
-  - Input (presentation title, slide title) - clean with focus ring
-  - Textarea (slide content) - generous padding and height
-  - Dialog (delete confirmations) - centered modal with clear actions
+  - Card (presentation list items, slide previews, theme preview) - with subtle shadow and hover lift
+  - Button (primary actions: "New Presentation", "Present", "Add Slide", "AI Generate", "AI Enhance") - with accent color for primary, ghost for secondary
+  - Input (presentation title, slide title, slide count) - clean with focus ring
+  - Textarea (slide content, AI topic description) - generous padding and height
+  - Dialog (delete confirmations, AI generation, theme selection) - centered modal with clear actions
   - Separator (dividing sections in editor)
   - ScrollArea (slide list, long content in presentation mode)
   
 - **Customizations**: 
-  - Full-screen presentation viewer component with dark background
+  - Full-screen presentation viewer component with themed gradient backgrounds
+  - Theme preview cards with visual samples
+  - AI generation modal with loading states
   - Slide navigation controls with keyboard shortcut indicators
   - Draggable slide reorder interface or simple up/down arrows
   - Empty state illustrations for new presentations
   
 - **States**: 
-  - Buttons: default (solid accent), hover (slight lift + darker), active (pressed down), disabled (low opacity + no hover)
-  - Inputs: default (subtle border), focus (accent ring + border), filled (subtle background change)
-  - Cards: default (white + shadow), hover (lifted shadow + border accent), selected (accent border)
+  - Buttons: default (solid accent), hover (slight lift + darker), active (pressed down), disabled (low opacity + no hover), loading (spinner for AI)
+  - Inputs: default (subtle border), focus (accent ring + border), filled (subtle background change), disabled (during AI generation)
+  - Cards: default (white + shadow), hover (lifted shadow + border accent), selected (accent border), theme preview (gradient background)
   - Slides in editor: default, hover (background change), selected/active (accent left border)
   
 - **Icon Selection**: 
@@ -113,13 +140,17 @@ Animations should be purposeful and professional - nothing flashy or distracting
   - X (close/exit)
   - List (slide overview)
   - CaretUp/CaretDown (reorder slides)
+  - Sparkle (AI features - filled for emphasis)
+  - Palette (theme selection)
+  - Check (selected theme indicator)
   
 - **Spacing**: 
   - Container padding: p-6 (24px) for main areas
-  - Card padding: p-6 for generous whitespace
+  - Card padding: p-6 for generous whitespace, p-4 for compact cards
   - Gap between cards: gap-4 (16px) for visual separation
   - Gap in forms: gap-3 (12px) for related fields
   - Section margins: mb-8 (32px) between major sections
+  - Button groups: gap-2 (8px) for related actions
   
 - **Mobile**: 
   - Stack presentation cards vertically on mobile
@@ -128,3 +159,5 @@ Animations should be purposeful and professional - nothing flashy or distracting
   - Touch-friendly button sizing (min 44px tap targets)
   - Hide slide preview sidebar on mobile, show slide counter prominently
   - Presentation mode adapts font sizes for smaller screens while maintaining readability
+  - Stack theme preview cards in single column on mobile
+  - Simplify AI generation form for mobile viewports

@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useKV } from '@github/spark/hooks';
-import { Presentation, Slide } from '@/lib/types';
+import { Presentation, Slide, PresentationTheme } from '@/lib/types';
 import { PresentationList } from '@/components/PresentationList';
 import { SlideEditor } from '@/components/SlideEditor';
 import { PresentationViewer } from '@/components/PresentationViewer';
+import { AIContentGenerator } from '@/components/AIContentGenerator';
+import { ThemeSelector } from '@/components/ThemeSelector';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -49,6 +51,7 @@ function App() {
       title: newPresentationTitle,
       createdAt: Date.now(),
       updatedAt: Date.now(),
+      theme: 'professional-blue',
       slides: [
         {
           id: `slide-${Date.now()}`,
@@ -64,6 +67,21 @@ function App() {
     setNewPresentationTitle('');
     setShowNewDialog(false);
     toast.success('Presentation created');
+  };
+
+  const createPresentationFromAI = (slides: Slide[]) => {
+    const newPresentation: Presentation = {
+      id: `pres-${Date.now()}`,
+      title: slides[0]?.title || 'AI Generated Presentation',
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      theme: 'professional-blue',
+      slides: slides,
+    };
+
+    setPresentations((current) => [...(current || []), newPresentation]);
+    setCurrentPresentationId(newPresentation.id);
+    setCurrentSlideIndex(0);
   };
 
   const deletePresentation = (id: string) => {
@@ -147,6 +165,7 @@ function App() {
     return (
       <PresentationViewer
         slides={currentPresentation.slides}
+        theme={currentPresentation.theme}
         onClose={() => setIsPresenting(false)}
       />
     );
@@ -179,6 +198,12 @@ function App() {
             <div className="flex gap-2">
               {currentPresentation ? (
                 <>
+                  <ThemeSelector
+                    currentTheme={currentPresentation.theme}
+                    onThemeChange={(theme) =>
+                      updatePresentation(currentPresentation.id, { theme })
+                    }
+                  />
                   <Button onClick={addSlide} variant="outline">
                     <Plus className="mr-2" />
                     Add Slide
@@ -189,10 +214,13 @@ function App() {
                   </Button>
                 </>
               ) : (
-                <Button onClick={() => setShowNewDialog(true)} className="bg-accent hover:bg-accent/90">
-                  <Plus className="mr-2" />
-                  New Presentation
-                </Button>
+                <>
+                  <AIContentGenerator onGenerate={createPresentationFromAI} />
+                  <Button onClick={() => setShowNewDialog(true)} className="bg-accent hover:bg-accent/90">
+                    <Plus className="mr-2" />
+                    New Presentation
+                  </Button>
+                </>
               )}
             </div>
           </div>

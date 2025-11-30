@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react';
-import { Slide } from '@/lib/types';
+import { Slide, PresentationTheme } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ArrowRight, X } from '@phosphor-icons/react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getTheme } from '@/lib/themes';
 
 interface PresentationViewerProps {
   slides: Slide[];
+  theme?: PresentationTheme;
   onClose: () => void;
 }
 
-export function PresentationViewer({ slides, onClose }: PresentationViewerProps) {
+export function PresentationViewer({ slides, theme, onClose }: PresentationViewerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
+  const themeConfig = getTheme(theme);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -62,12 +65,18 @@ export function PresentationViewer({ slides, onClose }: PresentationViewerProps)
   };
 
   return (
-    <div className="fixed inset-0 bg-slate-900 z-50 flex flex-col">
+    <div className="fixed inset-0 z-50 flex flex-col" style={{ background: themeConfig.background }}>
       <div className="absolute top-4 right-4 z-10 flex items-center gap-4">
-        <span className="text-white/70 text-sm font-medium">
+        <span className="font-medium" style={{ color: themeConfig.textColor, opacity: 0.7 }}>
           {currentIndex + 1} / {slides.length}
         </span>
-        <Button variant="ghost" size="sm" onClick={onClose} className="text-white hover:bg-white/10">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onClose}
+          style={{ color: themeConfig.textColor }}
+          className="hover:bg-white/10"
+        >
           <X size={24} />
         </Button>
       </div>
@@ -86,7 +95,7 @@ export function PresentationViewer({ slides, onClose }: PresentationViewerProps)
                 x: { type: 'tween', duration: 0.3 },
                 opacity: { duration: 0.2 },
               }}
-              className="text-white"
+              style={{ color: themeConfig.textColor }}
             >
               <h1 className="text-5xl md:text-6xl font-bold mb-8 leading-tight">
                 {currentSlide.title}
@@ -105,7 +114,12 @@ export function PresentationViewer({ slides, onClose }: PresentationViewerProps)
           size="lg"
           onClick={goToPrevious}
           disabled={currentIndex === 0}
-          className="bg-white/10 hover:bg-white/20 text-white border-white/20"
+          style={{
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            color: themeConfig.textColor,
+            borderColor: 'rgba(255, 255, 255, 0.2)',
+          }}
+          className="hover:bg-white/20"
         >
           <ArrowLeft className="mr-2" />
           Previous
@@ -115,7 +129,12 @@ export function PresentationViewer({ slides, onClose }: PresentationViewerProps)
           size="lg"
           onClick={goToNext}
           disabled={currentIndex === slides.length - 1}
-          className="bg-white/10 hover:bg-white/20 text-white border-white/20"
+          style={{
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            color: themeConfig.textColor,
+            borderColor: 'rgba(255, 255, 255, 0.2)',
+          }}
+          className="hover:bg-white/20"
         >
           Next
           <ArrowRight className="ml-2" />
