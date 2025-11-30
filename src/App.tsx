@@ -88,79 +88,79 @@ function App() {
     setCurrentSlideIndex(0);
   };
 
-  const createPresentationFromTemplate = (template: PresentationTemplate, title: string) => {
-    const newSlides: Slide[] = template.slides.map((slide, index) => ({
       ...slide,
       id: `slide-${Date.now()}-${index}`,
-    }));
-
+      ...slide,
+      id: `slide-${Date.now()}-${index}`,
     const newPresentation: Presentation = {
       id: `pres-${Date.now()}`,
       title: title,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
+      id: `pres-${Date.now()}`,
+      title: title,
       theme: template.theme,
       slides: newSlides,
-    };
-
+      theme: template.theme,
+      slides: newSlides,
     setPresentations((current) => [...(current || []), newPresentation]);
+ationId(newPresentation.id);
+    setCurrentSlideIndex(0);
     setCurrentPresentationId(newPresentation.id);
     setCurrentSlideIndex(0);
-    toast.success(`Presentation created from ${template.name} template`);
-  };
 
   const importPresentation = (presentation: Presentation) => {
     setPresentations((current) => [...(current || []), presentation]);
     setCurrentPresentationId(presentation.id);
     setCurrentSlideIndex(0);
-    toast.success('Presentation imported successfully');
-  };
+    setCurrentPresentationId(presentation.id);
+    setCurrentSlideIndex(0);
+
+  };ePresentation = (id: string) => {
 
   const deletePresentation = (id: string) => {
-    setPresentations((current) => (current || []).filter((p) => p.id !== id));
-    if (currentPresentationId === id) {
       setCurrentPresentationId(null);
       setCurrentSlideIndex(0);
-    }
-    setDeleteConfirmId(null);
+      setCurrentPresentationId(null);
+  };
+
+    setDeleteConfirmId(null);on>) => {
     toast.success('Presentation deleted');
-  };
-
-  const updatePresentation = (id: string, updates: Partial<Presentation>) => {
-    setPresentations((current) =>
       (current || []).map((p) =>
-        p.id === id ? { ...p, ...updates, updatedAt: Date.now() } : p
+d === id ? { ...p, ...updates, updatedAt: Date.now() } : p
       )
-    );
+    setPresentations((current) =>
   };
 
-  const addSlide = () => {
+      )
     if (!currentPresentation) return;
+  };
 
-    const newSlide: Slide = {
       id: `slide-${Date.now()}`,
       title: 'New Slide',
-      content: '',
-    };
 
-    updatePresentation(currentPresentation.id, {
-      slides: [...currentPresentation.slides, newSlide],
+    const newSlide: Slide = {
+
+      title: 'New Slide',
+      content: '',currentPresentation.slides, newSlide],
     });
 
     setCurrentSlideIndex(currentPresentation.slides.length);
-    toast.success('Slide added');
-  };
+      slides: [...currentPresentation.slides, newSlide],
+    });
 
   const updateSlide = (slideId: string, updates: Partial<Slide>) => {
     if (!currentPresentation) return;
-
-    updatePresentation(currentPresentation.id, {
-      slides: currentPresentation.slides.map((s) =>
-        s.id === slideId ? { ...s, ...updates } : s
-      ),
-    });
   };
 
+      slides: currentPresentation.slides.map((s) =>
+    if (!currentPresentation) return;.updates } : s
+      ),
+    updatePresentation(currentPresentation.id, {
+  };
+        s.id === slideId ? { ...s, ...updates } : s
+      ),
+    if (!currentPresentation) return;
+  };
+ewSlides = currentPresentation.slides.filter((s) => s.id !== slideId);
   const deleteSlide = (slideId: string) => {
     if (!currentPresentation) return;
 
@@ -168,65 +168,65 @@ function App() {
     updatePresentation(currentPresentation.id, { slides: newSlides });
 
     if (currentSlideIndex >= newSlides.length) {
-      setCurrentSlideIndex(Math.max(0, newSlides.length - 1));
-    }
-
-    toast.success('Slide deleted');
   };
-
+    }
   const moveSlide = (fromIndex: number, toIndex: number) => {
     if (!currentPresentation) return;
 
     const newSlides = [...currentPresentation.slides];
-    const [movedSlide] = newSlides.splice(fromIndex, 1);
-    newSlides.splice(toIndex, 0, movedSlide);
 
     updatePresentation(currentPresentation.id, { slides: newSlides });
-    setCurrentSlideIndex(toIndex);
+tSlideIndex(toIndex);
   };
-
+    const [movedSlide] = newSlides.splice(fromIndex, 1);
   const startPresentation = () => {
-    if (!currentPresentation || currentPresentation.slides.length === 0) {
+Presentation || currentPresentation.slides.length === 0) {
       toast.error('Add at least one slide to present');
       return;
-    }
     setIsPresenting(true);
-  };
+
 
   if (isPresenting && currentPresentation) {
     return (
       <PresentationViewer
         slides={currentPresentation.slides}
-        theme={currentPresentation.theme}
-        onClose={() => setIsPresenting(false)}
+    setIsPresenting(true);heme}
+  };
       />
     );
   }
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b bg-card">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              {currentPresentation && (
-                <Button
+        onClose={() => setIsPresenting(false)}
+      />uto px-6 py-4">
+    );s-center justify-between">
+  }ms-center gap-4">
+
+  return (
                   variant="ghost"
                   size="sm"
-                  onClick={() => {
+        <div className="container mx-auto px-6 py-4">
                     setCurrentPresentationId(null);
                     setCurrentSlideIndex(0);
-                  }}
+              {currentPresentation && (
                 >
                   <ArrowLeft className="mr-2" />
                   Back
+                  onClick={() => {
+                    setCurrentPresentationId(null);
+                    setCurrentSlideIndex(0);
+                  }} currentPresentation.title : 'SZMC Presentations'}
+                >
+                  <ArrowLeft className="mr-2" />
+
                 </Button>
-              )}
-              <h1 className="text-2xl md:text-3xl font-semibold">
-                {currentPresentation ? currentPresentation.title : 'SZMC Presentations'}
+              {currentPresentation ? (
+                <>
+                  <ThemeSelector
               </h1>
             </div>
-
+resentation(currentPresentation.id, { theme })
             <div className="flex gap-2">
               {currentPresentation ? (
                 <>
@@ -234,22 +234,15 @@ function App() {
                     currentTheme={currentPresentation.theme}
                     onThemeChange={(theme) =>
                       updatePresentation(currentPresentation.id, { theme })
-                    }
-                  />
-                  <ExportMenu presentation={currentPresentation} />
-                  <Button onClick={addSlide} variant="outline">
-                    <Plus className="mr-2" />
-                    Add Slide
-                  </Button>
-                  <Button onClick={startPresentation} className="bg-accent hover:bg-accent/90">
+                    }nt/90">
                     <PresentationIcon className="mr-2" />
                     Present
                   </Button>
                 </>
-              ) : (
-                <>
-                  <ImportMenu onImport={importPresentation} />
-                  <TemplateSelector onSelectTemplate={createPresentationFromTemplate} />
+                    Add Slide
+                  </Button>
+                  <Button onClick={startPresentation} className="bg-accent hover:bg-accent/90">
+                    <PresentationIcon className="mr-2" />} />
                   <AIContentGenerator onGenerate={createPresentationFromAI} />
                   <Button onClick={() => setShowNewDialog(true)} className="bg-accent hover:bg-accent/90">
                     <Plus className="mr-2" />
@@ -257,48 +250,55 @@ function App() {
                   </Button>
                 </>
               )}
-            </div>
+                  <AIContentGenerator onGenerate={createPresentationFromAI} />
           </div>
         </div>
       </header>
-
-      <main className="container mx-auto px-6 py-8">
+                  </Button>
+                </>-auto px-6 py-8">
         {currentPresentation ? (
           <SlideEditor
             slides={currentPresentation.slides}
             currentSlideIndex={currentSlideIndex}
-            onSlideChange={setCurrentSlideIndex}
-            onUpdateSlide={updateSlide}
+      </header>lideIndex}
+
             onDeleteSlide={deleteSlide}
             onMoveSlide={moveSlide}
           />
         ) : (
-          <PresentationList
+            currentSlideIndex={currentSlideIndex}
             presentations={presentations || []}
             onSelect={setCurrentPresentationId}
             onDelete={(id) => setDeleteConfirmId(id)}
           />
-        )}
+          />
       </main>
 
+      <Dialog open={showNewDialog} onOpenChange={setShowNewDialog}>
+            onSelect={setCurrentPresentationId}
+            onDelete={(id) => setDeleteConfirmId(id)}
+          />New Presentation</DialogTitle>
+            <DialogDescription>
+      </main>entation
+            </DialogDescription>
       <Dialog open={showNewDialog} onOpenChange={setShowNewDialog}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Create New Presentation</DialogTitle>
-            <DialogDescription>
+              value={newPresentationTitle}
               Enter a title for your new presentation
-            </DialogDescription>
+              onKeyDown={(e) => {
           </DialogHeader>
           <div className="py-4">
             <Input
-              placeholder="Presentation title..."
-              value={newPresentationTitle}
-              onChange={(e) => setNewPresentationTitle(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  createPresentation();
-                }
               }}
+              autoFocus
+              onChange={(e) => setNewPresentationTitle(e.target.value)}
+          </div>
+          <DialogFooter>
+                  createPresentation();ialog(false)}>
+              Cancel
+            </Button>
               autoFocus
             />
           </div>
@@ -315,13 +315,6 @@ function App() {
 
       <AlertDialog open={deleteConfirmId !== null} onOpenChange={() => setDeleteConfirmId(null)}>
         <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Presentation?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the presentation and all
-              its slides.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
@@ -332,7 +325,7 @@ function App() {
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </AlertDialog>
+              onClick={() => deleteConfirmId && deletePresentation(deleteConfirmId)}
     </div>
   );
 }
