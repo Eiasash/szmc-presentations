@@ -18,6 +18,69 @@ interface AIContentGeneratorProps {
   onGenerate: (slides: Slide[]) => void;
 }
 
+/**
+ * Generate presentation slides based on a topic
+ * Creates a structured outline with introduction, main points, and conclusion
+ */
+function generatePresentationOutline(topic: string, numSlides: number): Slide[] {
+  const slides: Slide[] = [];
+  const topicWords = topic.trim();
+  const baseTimestamp = Date.now();
+  
+  // Title/Introduction slide
+  slides.push({
+    id: `slide-${baseTimestamp}-0`,
+    title: topicWords,
+    content: `Welcome to this presentation on ${topicWords}.\n\n• Overview of key concepts\n• Important considerations\n• Practical applications`,
+  });
+
+  // Calculate how many content slides we need (excluding intro and conclusion)
+  const contentSlideCount = Math.max(1, numSlides - 2);
+  
+  // Generate content slide titles based on common presentation structure
+  const contentTitles = [
+    'Background & Context',
+    'Key Concepts',
+    'Main Findings',
+    'Clinical Implications',
+    'Best Practices',
+    'Case Studies',
+    'Evidence & Research',
+    'Implementation',
+    'Challenges & Solutions',
+    'Future Directions',
+    'Discussion Points',
+    'Practical Applications',
+    'Guidelines & Protocols',
+    'Risk Factors',
+    'Prevention Strategies',
+    'Treatment Options',
+    'Patient Outcomes',
+    'Quality Measures',
+  ];
+
+  // Add content slides
+  for (let i = 0; i < contentSlideCount && i < contentTitles.length; i++) {
+    slides.push({
+      id: `slide-${baseTimestamp}-${i + 1}`,
+      title: contentTitles[i],
+      content: `Key points about ${contentTitles[i].toLowerCase()} related to ${topicWords}:\n\n• Point 1: Add your content here\n• Point 2: Add your content here\n• Point 3: Add your content here\n\nNotes: Customize this slide with specific information.`,
+    });
+  }
+
+  // Conclusion slide (only if we have room)
+  if (numSlides >= 2) {
+    slides.push({
+      id: `slide-${baseTimestamp}-${slides.length}`,
+      title: 'Summary & Conclusions',
+      content: `Key takeaways from this presentation on ${topicWords}:\n\n• Main point 1\n• Main point 2\n• Main point 3\n\nThank you for your attention!\n\nQuestions?`,
+    });
+  }
+
+  // Ensure we don't exceed the requested number of slides
+  return slides.slice(0, numSlides);
+}
+
 export function AIContentGenerator({ onGenerate }: AIContentGeneratorProps) {
   const [open, setOpen] = useState(false);
   const [topic, setTopic] = useState('');
@@ -39,37 +102,8 @@ export function AIContentGenerator({ onGenerate }: AIContentGeneratorProps) {
     setIsGenerating(true);
 
     try {
-      const prompt = spark.llmPrompt`You are creating a professional presentation about "${topic}".
-
-Generate exactly ${numSlides} slides for this presentation. Each slide should have:
-- A clear, concise title
-- Content that is informative and well-structured (2-4 bullet points or short paragraphs)
-
-Return the result as a valid JSON object with a single property called "slides" that contains an array of slide objects.
-Each slide object should have exactly these properties:
-- title: string (the slide title)
-- content: string (the slide content, use \n for line breaks)
-
-Format your response as:
-{
-  "slides": [
-    {"title": "Introduction", "content": "Overview of the topic\n• Key point 1\n• Key point 2"},
-    ...more slides
-  ]
-}`;
-
-      const result = await spark.llm(prompt, 'gpt-4o', true);
-      const parsedResult = JSON.parse(result);
-
-      if (!parsedResult.slides || !Array.isArray(parsedResult.slides)) {
-        throw new Error('Invalid response format');
-      }
-
-      const slides: Slide[] = parsedResult.slides.map((slide: { title: string; content: string }, index: number) => ({
-        id: `slide-${Date.now()}-${index}`,
-        title: slide.title || `Slide ${index + 1}`,
-        content: slide.content || '',
-      }));
+      // Generate slides using our built-in template generator
+      const slides = generatePresentationOutline(topic, numSlides);
 
       if (slides.length === 0) {
         throw new Error('No slides generated');
@@ -79,9 +113,9 @@ Format your response as:
       setOpen(false);
       setTopic('');
       setSlideCount('5');
-      toast.success(`Generated ${slides.length} slides`);
+      toast.success(`Generated ${slides.length} slides - customize them with your content!`);
     } catch (error) {
-      console.error('AI generation error:', error);
+      console.error('Generation error:', error);
       toast.error('Failed to generate content. Please try again.');
     } finally {
       setIsGenerating(false);
@@ -96,7 +130,7 @@ Format your response as:
         className="border-accent/50 text-accent hover:bg-accent/10"
       >
         <Sparkle className="mr-2" weight="fill" />
-        AI Generate
+        Quick Generate
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
@@ -104,10 +138,10 @@ Format your response as:
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Sparkle weight="fill" className="text-accent" />
-              AI Content Generator
+              Quick Outline Generator
             </DialogTitle>
             <DialogDescription>
-              Let AI create a presentation outline for you. Describe your topic and we'll generate slides.
+              Generate a presentation outline based on your topic. Enter your topic and we'll create a structured template with slides you can customize.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">

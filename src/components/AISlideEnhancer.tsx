@@ -9,6 +9,42 @@ interface AISlideEnhancerProps {
   onEnhance: (title: string, content: string) => void;
 }
 
+/**
+ * Format and enhance slide content with better structure
+ */
+function formatSlideContent(title: string, content: string): { title: string; content: string } {
+  // Clean up the title - capitalize first letter of each word
+  const enhancedTitle = title
+    .trim()
+    .split(/\s+/)  // Split by one or more whitespace characters to handle multiple spaces
+    .filter(word => word.length > 0)  // Filter out empty strings
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+
+  // Clean up and format content
+  let enhancedContent = content.trim();
+  
+  // If content doesn't have bullet points, try to add them
+  if (!enhancedContent.includes('•') && !enhancedContent.includes('-') && !enhancedContent.includes('*')) {
+    // Split by periods or newlines and convert to bullet points
+    const sentences = enhancedContent
+      .split(/[.\n]+/)
+      .map(s => s.trim())
+      .filter(s => s.length > 0);
+    
+    if (sentences.length > 1) {
+      enhancedContent = sentences.map(s => `• ${s}`).join('\n');
+    }
+  }
+  
+  // Clean up existing bullet points for consistency
+  enhancedContent = enhancedContent
+    .replace(/^[-*]\s*/gm, '• ')
+    .replace(/\n{3,}/g, '\n\n');
+
+  return { title: enhancedTitle, content: enhancedContent };
+}
+
 export function AISlideEnhancer({
   currentTitle,
   currentContent,
@@ -18,43 +54,21 @@ export function AISlideEnhancer({
 
   const enhanceSlide = async () => {
     if (!currentTitle.trim() && !currentContent.trim()) {
-      toast.error('Please add some content to enhance');
+      toast.error('Please add some content to format');
       return;
     }
 
     setIsEnhancing(true);
 
     try {
-      const prompt = spark.llmPrompt`You are helping to improve a presentation slide.
-
-Current slide:
-Title: "${currentTitle}"
-Content: "${currentContent}"
-
-Please enhance this slide by:
-1. Making the title more engaging and clear (keep it concise)
-2. Improving the content to be more professional, well-structured, and impactful
-3. Using bullet points where appropriate
-4. Ensuring medical/professional terminology is accurate if applicable
-
-Return the result as a valid JSON object with exactly these properties:
-{
-  "title": "enhanced title here",
-  "content": "enhanced content here (use \\n for line breaks)"
-}`;
-
-      const result = await spark.llm(prompt, 'gpt-4o', true);
-      const parsedResult = JSON.parse(result);
-
-      if (!parsedResult.title || !parsedResult.content) {
-        throw new Error('Invalid response format');
-      }
-
-      onEnhance(parsedResult.title, parsedResult.content);
-      toast.success('Slide enhanced successfully');
+      // Use built-in formatting instead of AI
+      const { title, content } = formatSlideContent(currentTitle, currentContent);
+      
+      onEnhance(title, content);
+      toast.success('Slide formatted successfully');
     } catch (error) {
-      console.error('AI enhancement error:', error);
-      toast.error('Failed to enhance slide. Please try again.');
+      console.error('Format error:', error);
+      toast.error('Failed to format slide. Please try again.');
     } finally {
       setIsEnhancing(false);
     }
@@ -71,12 +85,12 @@ Return the result as a valid JSON object with exactly these properties:
       {isEnhancing ? (
         <>
           <Sparkle className="mr-2 animate-spin" weight="fill" />
-          Enhancing...
+          Formatting...
         </>
       ) : (
         <>
           <Sparkle className="mr-2" weight="fill" />
-          AI Enhance
+          Format
         </>
       )}
     </Button>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useKV } from '@github/spark/hooks';
+import { useLocalStorage } from '@/hooks/use-storage';
 import { Presentation, Slide, PresentationTheme } from '@/lib/types';
 import { PresentationTemplate } from '@/lib/templates';
 import { PresentationList } from '@/components/PresentationList';
@@ -34,7 +34,7 @@ import { Plus, ArrowLeft, Presentation as PresentationIcon } from '@phosphor-ico
 import { toast } from 'sonner';
 
 function App() {
-  const [presentations, setPresentations] = useKV<Presentation[]>('presentations', []);
+  const [presentations, setPresentations] = useLocalStorage<Presentation[]>('presentations', []);
   const [currentPresentationId, setCurrentPresentationId] = useState<string | null>(null);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [isPresenting, setIsPresenting] = useState(false);
