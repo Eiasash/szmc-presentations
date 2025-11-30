@@ -25,10 +25,11 @@ interface AIContentGeneratorProps {
 function generatePresentationOutline(topic: string, numSlides: number): Slide[] {
   const slides: Slide[] = [];
   const topicWords = topic.trim();
+  const baseTimestamp = Date.now();
   
   // Title/Introduction slide
   slides.push({
-    id: `slide-${Date.now()}-0`,
+    id: `slide-${baseTimestamp}-0`,
     title: topicWords,
     content: `Welcome to this presentation on ${topicWords}.\n\n• Overview of key concepts\n• Important considerations\n• Practical applications`,
   });
@@ -61,7 +62,7 @@ function generatePresentationOutline(topic: string, numSlides: number): Slide[] 
   // Add content slides
   for (let i = 0; i < contentSlideCount && i < contentTitles.length; i++) {
     slides.push({
-      id: `slide-${Date.now()}-${i + 1}`,
+      id: `slide-${baseTimestamp}-${i + 1}`,
       title: contentTitles[i],
       content: `Key points about ${contentTitles[i].toLowerCase()} related to ${topicWords}:\n\n• Point 1: Add your content here\n• Point 2: Add your content here\n• Point 3: Add your content here\n\nNotes: Customize this slide with specific information.`,
     });
@@ -70,7 +71,7 @@ function generatePresentationOutline(topic: string, numSlides: number): Slide[] 
   // Conclusion slide (only if we have room)
   if (numSlides >= 2) {
     slides.push({
-      id: `slide-${Date.now()}-${slides.length}`,
+      id: `slide-${baseTimestamp}-${slides.length}`,
       title: 'Summary & Conclusions',
       content: `Key takeaways from this presentation on ${topicWords}:\n\n• Main point 1\n• Main point 2\n• Main point 3\n\nThank you for your attention!\n\nQuestions?`,
     });

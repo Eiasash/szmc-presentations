@@ -54,19 +54,28 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T | undefined
 
   // Sync with localStorage changes from other tabs/windows
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === key && e.newValue !== null) {
-        try {
-          setStoredValue(JSON.parse(e.newValue));
-        } catch {
-          // Ignore parse errors
+      if (e.key === key) {
+        if (e.newValue === null) {
+          // Item was deleted, reset to initial value
+          setStoredValue(initialValue);
+        } else {
+          try {
+            setStoredValue(JSON.parse(e.newValue));
+          } catch {
+            // Ignore parse errors
+          }
         }
       }
     };
 
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
-  }, [key]);
+  }, [key, initialValue]);
 
   return [storedValue, setValue];
 }

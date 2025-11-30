@@ -16,7 +16,8 @@ function formatSlideContent(title: string, content: string): { title: string; co
   // Clean up the title - capitalize first letter of each word
   const enhancedTitle = title
     .trim()
-    .split(' ')
+    .split(/\s+/)  // Split by one or more whitespace characters to handle multiple spaces
+    .filter(word => word.length > 0)  // Filter out empty strings
     .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(' ');
 
