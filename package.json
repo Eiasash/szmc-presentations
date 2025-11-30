@@ -1,8 +1,26 @@
 {
-    "name": "spark-template",
-    "private": true,
-    "version": "0.0.0",
+    "name": "szmc-presentations",
+    "version": "1.0.0",
+    "description": "A professional presentation builder and viewer with AI-powered content generation and customizable themes",
     "type": "module",
+    "license": "MIT",
+    "keywords": [
+        "presentations",
+        "slides",
+        "ai",
+        "react",
+        "presentation-builder"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Eiasash/szmc-presentations"
+    },
+    "main": "dist/index.js",
+    "module": "dist/index.js",
+    "files": [
+        "dist",
+        "src"
+    ],
     "scripts": {
         "dev": "vite",
         "kill": "fuser -k 5000/tcp",
