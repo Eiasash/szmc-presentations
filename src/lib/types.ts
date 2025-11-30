@@ -2,6 +2,8 @@ export interface Slide {
   id: string;
   title: string;
   content: string;
+  imageUrl?: string;
+  imagePosition?: 'top' | 'bottom' | 'left' | 'right' | 'background';
 }
 
 export interface Presentation {

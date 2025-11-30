@@ -62,14 +62,28 @@ A professional presentation builder and viewer for SZMC that enables users to cr
 - **Success criteria**: Navigation is responsive, smooth, and predictable with visual feedback
 
 ### Export Presentations
-- **Functionality**: Export presentations to PDF or PowerPoint (PPTX) formats
-- **Purpose**: Enable sharing, distribution, and offline presentation delivery
+- **Functionality**: Export presentations to multiple formats including PDF, PowerPoint (PPTX), HTML, Markdown, JSON, and plain text
+- **Purpose**: Enable sharing, distribution, offline presentation delivery, version control, and cross-platform compatibility
 - **Trigger**: User clicks "Export" dropdown button while editing a presentation
-- **Progression**: Click Export → Select format (PDF or PowerPoint) → File downloads with presentation content and theme styling
-- **Success criteria**: Exported files maintain visual theme, include all slides with proper formatting, and can be opened in standard viewers
+- **Progression**: Click Export → Select format (PDF, PowerPoint, HTML, Markdown, Text, or JSON) → File downloads with presentation content and theme styling
+- **Success criteria**: Exported files maintain visual theme (where applicable), include all slides with proper formatting including images, and can be opened in standard viewers or editors
+
+### Import Presentations
+- **Functionality**: Import presentations from various file formats including JSON, Markdown, HTML, and plain text
+- **Purpose**: Enable migration from other tools, version control integration, collaborative editing, and content reuse
+- **Trigger**: User clicks "Import" dropdown button from the main dashboard
+- **Progression**: Click Import → Select format → Choose file → Enter presentation title (if needed) → Review imported slides → Edit as needed
+- **Success criteria**: Files are parsed correctly, slides are created with appropriate titles and content, formatting is preserved where possible
+
+### Slide Images and Visuals
+- **Functionality**: Add images to slides with flexible positioning options (top, bottom, left, right, or background)
+- **Purpose**: Enhance visual appeal, illustrate concepts, and make presentations more engaging
+- **Trigger**: User clicks "Add Image" button while editing a slide
+- **Progression**: Click Add Image → Upload file or enter URL → Preview image → Select position → Image appears on slide → Adjust position if needed
+- **Success criteria**: Images display correctly in editor and presentation mode, position options work as expected, images export correctly to supported formats, file size limits are enforced
 
 ## Edge Case Handling
-- **Empty presentations**: Show helpful empty state with guidance to add first slide, disable export button
+- **Empty presentations**: Show helpful empty state with guidance to add first slide, disable export/import buttons appropriately
 - **Single slide**: Disable previous/next navigation appropriately, show 1/1 counter
 - **Long content**: Implement scroll within slides if content exceeds viewport, handle text overflow in exports
 - **Unsaved work**: Auto-save all changes immediately to prevent data loss
@@ -80,6 +94,11 @@ A professional presentation builder and viewer for SZMC that enables users to cr
 - **Theme persistence**: Save theme choice with presentation for consistent viewing and export
 - **Export failures**: Show error toast with clear message, allow retry
 - **Large exports**: Display loading state during export generation
+- **Import failures**: Validate file format, show clear error messages for unsupported formats or malformed files
+- **Large image files**: Enforce size limits (5MB), show error for oversized images
+- **Invalid image URLs**: Handle broken links gracefully, show error without breaking slide
+- **Image positioning**: Ensure images scale appropriately for different screen sizes and positions
+- **Corrupted imports**: Validate JSON structure, handle missing fields with defaults
 
 ## Design Direction
 The design should feel professional, trustworthy, and institutional - appropriate for medical or organizational settings. It should project authority and clarity while remaining approachable. A minimal interface serves the content-first purpose, ensuring presentations remain the focus while the tools feel sophisticated and purpose-built.
@@ -153,8 +172,15 @@ Animations should be purposeful and professional - nothing flashy or distracting
   - Palette (theme selection)
   - Check (selected theme indicator)
   - Download (export menu)
+  - Upload (import menu)
   - FilePdf (PDF export option)
   - FilePpt (PowerPoint export option)
+  - FileJs (JSON import/export option)
+  - FileCode (Markdown import/export option)
+  - FileHtml (HTML import/export option)
+  - FileText (Text import/export option)
+  - Image (add/edit image to slide)
+  - Link (image URL input)
   
 - **Spacing**: 
   - Container padding: p-6 (24px) for main areas
@@ -173,3 +199,5 @@ Animations should be purposeful and professional - nothing flashy or distracting
   - Presentation mode adapts font sizes for smaller screens while maintaining readability
   - Stack theme preview cards in single column on mobile
   - Simplify AI generation form for mobile viewports
+  - Image positioning adjusts for mobile (side positions become top/bottom)
+  - Import/export menus remain accessible with scrollable dropdowns

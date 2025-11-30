@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Trash, CaretUp, CaretDown } from '@phosphor-icons/react';
 import { AISlideEnhancer } from '@/components/AISlideEnhancer';
+import { ImageUploader } from '@/components/ImageUploader';
 
 interface SlideEditorProps {
   slides: Slide[];
@@ -116,6 +117,29 @@ export function SlideEditor({
                 placeholder="Enter slide content..."
                 className="min-h-[400px] resize-none"
               />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium mb-2 block">Slide Image</label>
+              <ImageUploader
+                currentImageUrl={currentSlide.imageUrl}
+                currentImagePosition={currentSlide.imagePosition}
+                onImageChange={(imageUrl, imagePosition) => {
+                  onUpdateSlide(currentSlide.id, { imageUrl, imagePosition });
+                }}
+              />
+              {currentSlide.imageUrl && (
+                <div className="mt-3 border rounded-lg p-3 bg-muted/50">
+                  <img
+                    src={currentSlide.imageUrl}
+                    alt="Slide preview"
+                    className="max-h-40 mx-auto rounded"
+                  />
+                  <p className="text-xs text-muted-foreground text-center mt-2">
+                    Position: {currentSlide.imagePosition || 'top'}
+                  </p>
+                </div>
+              )}
             </div>
 
             {slides.length > 1 && (

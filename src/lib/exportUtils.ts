@@ -2,6 +2,7 @@ import jsPDF from 'jspdf';
 import PptxGenJS from 'pptxgenjs';
 import { Presentation, Slide } from './types';
 import { getTheme } from './themes';
+import { marked } from 'marked';
 
 const hexToRgb = (hex: string): { r: number; g: number; b: number } => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -130,4 +131,165 @@ export const exportToPowerPoint = async (presentation: Presentation): Promise<vo
 
   const fileName = `${presentation.title.replace(/[^a-z0-9]/gi, '_')}.pptx`;
   await pptx.writeFile({ fileName });
+};
+
+export const exportToJSON = (presentation: Presentation): void => {
+  const json = JSON.stringify(presentation, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${presentation.title.replace(/[^a-z0-9]/gi, '_')}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
+export const exportToMarkdown = (presentation: Presentation): void => {
+  let markdown = `# ${presentation.title}\n\n`;
+  markdown += `*Created: ${new Date(presentation.createdAt).toLocaleDateString()}*\n\n`;
+  markdown += `---\n\n`;
+
+  presentation.slides.forEach((slide: Slide, index: number) => {
+    markdown += `## ${slide.title}\n\n`;
+    markdown += `${slide.content}\n\n`;
+    if (slide.imageUrl) {
+      markdown += `![Slide Image](${slide.imageUrl})\n\n`;
+    }
+    if (index < presentation.slides.length - 1) {
+      markdown += `---\n\n`;
+    }
+  });
+
+  const blob = new Blob([markdown], { type: 'text/markdown' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${presentation.title.replace(/[^a-z0-9]/gi, '_')}.md`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
+export const exportToHTML = (presentation: Presentation): void => {
+  const theme = getTheme(presentation.theme);
+  
+  let html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${presentation.title}</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Arial', sans-serif;
+      background: ${theme.background};
+      color: ${theme.textColor};
+      overflow-x: hidden;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .meta {
+      text-align: center;
+      opacity: 0.8;
+      margin-bottom: 40px;
+    }
+    .slide {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 40px;
+      margin-bottom: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .slide h2 {
+      font-size: 36px;
+      margin-bottom: 20px;
+      color: ${theme.accentColor};
+    }
+    .slide-content {
+      font-size: 18px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+    .slide img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    .slide-number {
+      text-align: right;
+      opacity: 0.6;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>${presentation.title}</h1>
+    <p class="meta">Created: ${new Date(presentation.createdAt).toLocaleDateString()}</p>
+`;
+
+  presentation.slides.forEach((slide: Slide, index: number) => {
+    html += `    <div class="slide">
+      <h2>${slide.title}</h2>
+`;
+    if (slide.imageUrl) {
+      html += `      <img src="${slide.imageUrl}" alt="${slide.title}" />
+`;
+    }
+    html += `      <div class="slide-content">${slide.content}</div>
+      <div class="slide-number">Slide ${index + 1} of ${presentation.slides.length}</div>
+    </div>
+`;
+  });
+
+  html += `  </div>
+</body>
+</html>`;
+
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${presentation.title.replace(/[^a-z0-9]/gi, '_')}.html`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
+export const exportToText = (presentation: Presentation): void => {
+  let text = `${presentation.title}\n`;
+  text += `${'='.repeat(presentation.title.length)}\n\n`;
+  text += `Created: ${new Date(presentation.createdAt).toLocaleDateString()}\n\n`;
+
+  presentation.slides.forEach((slide: Slide, index: number) => {
+    text += `\n--- Slide ${index + 1} ---\n\n`;
+    text += `${slide.title}\n`;
+    text += `${'-'.repeat(slide.title.length)}\n\n`;
+    text += `${slide.content}\n`;
+  });
+
+  const blob = new Blob([text], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${presentation.title.replace(/[^a-z0-9]/gi, '_')}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 };

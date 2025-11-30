@@ -7,6 +7,7 @@ import { PresentationViewer } from '@/components/PresentationViewer';
 import { AIContentGenerator } from '@/components/AIContentGenerator';
 import { ThemeSelector } from '@/components/ThemeSelector';
 import { ExportMenu } from '@/components/ExportMenu';
+import { ImportMenu } from '@/components/ImportMenu';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -83,6 +84,13 @@ function App() {
     setPresentations((current) => [...(current || []), newPresentation]);
     setCurrentPresentationId(newPresentation.id);
     setCurrentSlideIndex(0);
+  };
+
+  const importPresentation = (presentation: Presentation) => {
+    setPresentations((current) => [...(current || []), presentation]);
+    setCurrentPresentationId(presentation.id);
+    setCurrentSlideIndex(0);
+    toast.success('Presentation imported successfully');
   };
 
   const deletePresentation = (id: string) => {
@@ -217,6 +225,7 @@ function App() {
                 </>
               ) : (
                 <>
+                  <ImportMenu onImport={importPresentation} />
                   <AIContentGenerator onGenerate={createPresentationFromAI} />
                   <Button onClick={() => setShowNewDialog(true)} className="bg-accent hover:bg-accent/90">
                     <Plus className="mr-2" />

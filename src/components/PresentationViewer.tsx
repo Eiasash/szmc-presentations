@@ -96,13 +96,69 @@ export function PresentationViewer({ slides, theme, onClose }: PresentationViewe
                 opacity: { duration: 0.2 },
               }}
               style={{ color: themeConfig.textColor }}
+              className="relative"
             >
-              <h1 className="text-5xl md:text-6xl font-bold mb-8 leading-tight">
-                {currentSlide.title}
-              </h1>
-              <div className="text-2xl md:text-3xl leading-relaxed whitespace-pre-wrap">
-                {currentSlide.content}
+              {currentSlide.imageUrl && currentSlide.imagePosition === 'background' && (
+                <div
+                  className="absolute inset-0 opacity-20 bg-cover bg-center rounded-lg"
+                  style={{ backgroundImage: `url(${currentSlide.imageUrl})` }}
+                />
+              )}
+
+              <div className={`relative z-10 ${
+                currentSlide.imagePosition === 'left' || currentSlide.imagePosition === 'right'
+                  ? 'flex gap-8 items-start'
+                  : ''
+              }`}>
+                {currentSlide.imageUrl && currentSlide.imagePosition === 'top' && (
+                  <div className="mb-8">
+                    <img
+                      src={currentSlide.imageUrl}
+                      alt={currentSlide.title}
+                      className="max-h-64 mx-auto rounded-lg shadow-lg"
+                    />
+                  </div>
+                )}
+
+                {currentSlide.imageUrl && currentSlide.imagePosition === 'left' && (
+                  <div className="flex-shrink-0">
+                    <img
+                      src={currentSlide.imageUrl}
+                      alt={currentSlide.title}
+                      className="max-w-md rounded-lg shadow-lg"
+                    />
+                  </div>
+                )}
+
+                <div className="flex-1">
+                  <h1 className="text-5xl md:text-6xl font-bold mb-8 leading-tight">
+                    {currentSlide.title}
+                  </h1>
+                  <div className="text-2xl md:text-3xl leading-relaxed whitespace-pre-wrap">
+                    {currentSlide.content}
+                  </div>
+                </div>
+
+                {currentSlide.imageUrl && currentSlide.imagePosition === 'right' && (
+                  <div className="flex-shrink-0">
+                    <img
+                      src={currentSlide.imageUrl}
+                      alt={currentSlide.title}
+                      className="max-w-md rounded-lg shadow-lg"
+                    />
+                  </div>
+                )}
               </div>
+
+              {currentSlide.imageUrl && currentSlide.imagePosition === 'bottom' && (
+                <div className="mt-8">
+                  <img
+                    src={currentSlide.imageUrl}
+                    alt={currentSlide.title}
+                    className="max-h-64 mx-auto rounded-lg shadow-lg"
+                  />
+                </div>
+              )}
             </motion.div>
           </AnimatePresence>
         </div>
