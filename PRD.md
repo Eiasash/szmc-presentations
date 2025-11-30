@@ -61,16 +61,25 @@ A professional presentation builder and viewer for SZMC that enables users to cr
 - **Progression**: Press arrow key or click button → Slide transitions → Counter updates → Cannot go beyond bounds
 - **Success criteria**: Navigation is responsive, smooth, and predictable with visual feedback
 
+### Export Presentations
+- **Functionality**: Export presentations to PDF or PowerPoint (PPTX) formats
+- **Purpose**: Enable sharing, distribution, and offline presentation delivery
+- **Trigger**: User clicks "Export" dropdown button while editing a presentation
+- **Progression**: Click Export → Select format (PDF or PowerPoint) → File downloads with presentation content and theme styling
+- **Success criteria**: Exported files maintain visual theme, include all slides with proper formatting, and can be opened in standard viewers
+
 ## Edge Case Handling
-- **Empty presentations**: Show helpful empty state with guidance to add first slide
+- **Empty presentations**: Show helpful empty state with guidance to add first slide, disable export button
 - **Single slide**: Disable previous/next navigation appropriately, show 1/1 counter
-- **Long content**: Implement scroll within slides if content exceeds viewport
+- **Long content**: Implement scroll within slides if content exceeds viewport, handle text overflow in exports
 - **Unsaved work**: Auto-save all changes immediately to prevent data loss
 - **Deleted presentations**: Confirm before deletion with clear warning message
 - **AI generation failures**: Show clear error messages and allow retry without losing input
 - **AI rate limiting**: Gracefully handle API limits with informative messages
 - **Invalid AI responses**: Fallback to default content or show error without breaking the app
-- **Theme persistence**: Save theme choice with presentation for consistent viewing
+- **Theme persistence**: Save theme choice with presentation for consistent viewing and export
+- **Export failures**: Show error toast with clear message, allow retry
+- **Large exports**: Display loading state during export generation
 
 ## Design Direction
 The design should feel professional, trustworthy, and institutional - appropriate for medical or organizational settings. It should project authority and clarity while remaining approachable. A minimal interface serves the content-first purpose, ensuring presentations remain the focus while the tools feel sophisticated and purpose-built.
@@ -143,6 +152,9 @@ Animations should be purposeful and professional - nothing flashy or distracting
   - Sparkle (AI features - filled for emphasis)
   - Palette (theme selection)
   - Check (selected theme indicator)
+  - Download (export menu)
+  - FilePdf (PDF export option)
+  - FilePpt (PowerPoint export option)
   
 - **Spacing**: 
   - Container padding: p-6 (24px) for main areas

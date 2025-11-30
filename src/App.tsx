@@ -6,6 +6,7 @@ import { SlideEditor } from '@/components/SlideEditor';
 import { PresentationViewer } from '@/components/PresentationViewer';
 import { AIContentGenerator } from '@/components/AIContentGenerator';
 import { ThemeSelector } from '@/components/ThemeSelector';
+import { ExportMenu } from '@/components/ExportMenu';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -204,6 +205,7 @@ function App() {
                       updatePresentation(currentPresentation.id, { theme })
                     }
                   />
+                  <ExportMenu presentation={currentPresentation} />
                   <Button onClick={addSlide} variant="outline">
                     <Plus className="mr-2" />
                     Add Slide
